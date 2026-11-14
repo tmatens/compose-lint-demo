@@ -17,12 +17,11 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      # The Compose file is insecure on purpose, so the lint step always
-      # reports findings and exits non-zero. The findings are the point of
-      # this repository, so the job is allowed to pass. A real project would
-      # not set continue-on-error.
-      - uses: tmatens/compose-lint@0f885056cffb05621e6712445272427c7c3bad07 # v1.5.0
-        continue-on-error: true
+      # Temporary: run an unreleased compose-lint commit through the same
+      # upload path, to check that tagged output keeps existing alerts.
+      - run: |
+          pipx install "git+https://github.com/tmatens/compose-lint@f5bab47a3b6f3fd1bce2d2987d1b8ab33377ee1c"
+          compose-lint --format sarif --output results.sarif docker-compose.yml || true
+      - uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4.39.0
         with:
-          files: docker-compose.yml
-          sarif-file: results.sarif
+          sarif_file: results.sarif
