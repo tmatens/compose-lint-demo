@@ -16,7 +16,7 @@ control of the host.
 - `.github/workflows/compose-lint.yml` runs the compose-lint GitHub Action on
   every push to `main` and uploads a SARIF file.
 - The findings appear under **Security > Code scanning**. With compose-lint
-  1.5.0 the file produces 54 findings across all 28 rules.
+  1.6.0 the file produces 54 findings across all 28 rules.
 
 Code scanning alerts are visible only to people with write access to a
 repository. To see them yourself, fork this repository, enable Actions on the
