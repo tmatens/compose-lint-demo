@@ -1,0 +1,61 @@
+# Deliberately insecure. Every service here exists to trigger compose-lint
+# rules so their findings appear under Security > Code scanning.
+# Do not run this file: several services would hand a container the host.
+
+services:
+  # Host control: the Docker socket, the delegated Engine API, privileged mode.
+  host-control:
+    image: nginx
+    privileged: true
+    use_api_socket: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  # Host namespaces and devices.
+  host-namespaces:
+    image: nginx:1.29.3
+    network_mode: host
+    pid: host
+    ipc: host
+    devices:
+      - /dev/sda:/dev/sda
+
+  # Capabilities added back, one from each graded group.
+  capabilities:
+    image: nginx:1.29.3
+    cap_add:
+      - SYS_ADMIN
+      - NET_ADMIN
+      - SYS_PTRACE
+      - SYS_TIME
+      - SYS_NICE
+      - SYSLOG
+
+  # Security profiles switched off, and running as root on purpose.
+  profiles-off:
+    image: nginx:1.29.3
+    user: root
+    security_opt:
+      - seccomp=unconfined
+      - apparmor=unconfined
+
+  # Host paths: a root-equivalent one writable, a sensitive one, a shared one.
+  host-mounts:
+    image: nginx:1.29.3
+    volumes:
+      - /etc:/host/etc
+      - /proc:/host/proc:ro
+      - /srv/data:/data:shared
+    tmpfs:
+      - /tmp:exec,suid
+
+  # Credentials in the environment, a port on every interface, no logs.
+  web:
+    image: nginx:1.29.3
+    ports:
+      - "8080:80"
+    environment:
+      DB_PASSWORD: example-password
+      DATABASE_URL: postgres://app:example-password@db:5432/app
+    logging:
+      driver: none

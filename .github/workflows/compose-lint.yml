@@ -1,0 +1,28 @@
+name: Compose Lint
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  compose-lint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read          # checkout
+      security-events: write  # upload the SARIF to Code Scanning
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # The Compose file is insecure on purpose, so the lint step always
+      # reports findings and exits non-zero. The findings are the point of
+      # this repository, so the job is allowed to pass. A real project would
+      # not set continue-on-error.
+      - uses: tmatens/compose-lint@0f885056cffb05621e6712445272427c7c3bad07 # v1.5.0
+        continue-on-error: true
+        with:
+          files: docker-compose.yml
+          sarif-file: results.sarif
