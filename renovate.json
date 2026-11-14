@@ -1,0 +1,13 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "packageRules": [
+    {
+      "description": "The images in docker-compose.yml are part of the demo. An untagged image and images without a digest are there to trigger CL-0004 and CL-0019, so no bot updates or pins them. They change only when the demo's findings are meant to change.",
+      "matchManagers": ["docker-compose"],
+      "enabled": false
+    }
+  ]
+}
