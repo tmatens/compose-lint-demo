@@ -21,7 +21,7 @@ jobs:
       # reports findings and exits non-zero. The findings are the point of
       # this repository, so the job is allowed to pass. A real project would
       # not set continue-on-error.
-      - uses: tmatens/compose-lint@ad1d18f46b594e89658acc08fbc73e04011829d9 # v1.6.0
+      - uses: tmatens/compose-lint@4e1818eb976095dee0a75b1bd83a0039263acdf4 # v1.8.2
         continue-on-error: true
         with:
           files: docker-compose.yml
